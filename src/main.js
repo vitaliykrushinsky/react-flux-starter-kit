@@ -5,6 +5,8 @@ let React = require('react');
 let Home = require('./components/homePage');
 let About = require('./components/about/aboutPage');
 let Header = require('./components/common/header');
+let Authors = require('./components/authors/authorPage');
+
 
 let App = React.createClass({
     render: function () {
@@ -13,6 +15,9 @@ let App = React.createClass({
         switch (this.props.route) { // check hash
             case 'about':
                 Child = About;
+                break;
+            case 'authors':
+                Child = Authors;
                 break;
             default:
                 Child = Home;
