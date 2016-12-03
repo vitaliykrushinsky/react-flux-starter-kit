@@ -49121,6 +49121,26 @@ module.exports = {
 },{}],200:[function(require,module,exports){
 "use strict";
 
+let React = require('react');
+let Link = require('react-router').Link;
+
+let NotFoundPage = React.createClass({displayName: "NotFoundPage",
+    render: function() {
+        return (
+            React.createElement("div", null, 
+                React.createElement("h1", null, "Page Not Found"), 
+                React.createElement("p", null, "Whoops! Sorry, there is nothing to see here."), 
+                React.createElement("p", null, React.createElement(Link, {to: "app"}, "Back to Home"))
+            )
+        );
+    }
+});
+
+module.exports = NotFoundPage;
+
+},{"react":197,"react-router":28}],201:[function(require,module,exports){
+"use strict";
+
 var React = require('react');
 
 var About = React.createClass({displayName: "About",
@@ -49161,21 +49181,36 @@ var About = React.createClass({displayName: "About",
 });
 
 module.exports = About;
-},{"react":197}],201:[function(require,module,exports){
+},{"react":197}],202:[function(require,module,exports){
 "use strict";
 
 let React = require('react');
-let authorApi = require('../../api/authorApi');
+let Header = require('./common/header');
+let RouteHandler = require('react-router').RouteHandler;
 
-let Authors = React.createClass({displayName: "Authors",
-    getInitialState: function () {
-        return {
-            authors: []
-        };
-    },
+let App = React.createClass({displayName: "App",
+    render: function () {
 
-    componentWillMount: function () {
-        this.setState({ authors: authorApi.getAllAuthors() })
+        return(
+            React.createElement("div", null, 
+                React.createElement(Header, null), 
+                React.createElement(RouteHandler, null)
+            )
+        );
+    }
+});
+
+module.exports = App;
+
+},{"./common/header":205,"react":197,"react-router":28}],203:[function(require,module,exports){
+"use strict";
+
+let React = require('react');
+
+let AuthorsList = React.createClass({displayName: "AuthorsList",
+
+    propTypes: {
+      authors: React.PropTypes.array.isRequired
     },
 
     render: function () {
@@ -49189,14 +49224,14 @@ let Authors = React.createClass({displayName: "Authors",
         };
         return (
             React.createElement("div", null, 
-                React.createElement("h1", null, "Authors"), 
                 React.createElement("table", {className: "table"}, 
                     React.createElement("thead", null, 
                         React.createElement("th", null, "ID"), 
                         React.createElement("th", null, "Name")
                     ), 
                     React.createElement("tbody", null, 
-                        this.state.authors.map(createAuthorRow, this)
+                        /*receive Author list data from parent component*/
+                        this.props.authors.map(createAuthorRow, this)
                     )
                 )
             )
@@ -49204,9 +49239,43 @@ let Authors = React.createClass({displayName: "Authors",
     }
 });
 
-module.exports = Authors;
+module.exports = AuthorsList;
 
-},{"../../api/authorApi":198,"react":197}],202:[function(require,module,exports){
+},{"react":197}],204:[function(require,module,exports){
+"use strict";
+
+let React = require('react');
+let authorApi = require('../../api/authorApi');
+let AuthorList = require('./authorList');
+
+let AuthorsPage = React.createClass({displayName: "AuthorsPage",
+    getInitialState: function () {
+        return {
+            authors: []
+        };
+    },
+
+    componentDidMount: function () {
+
+        if (this.isMounted()) {
+            this.setState({ authors: authorApi.getAllAuthors() }); // get AuthorsPage list
+        }
+    },
+
+    render: function () {
+        return (
+            React.createElement("div", null, 
+                React.createElement("h1", null, "Authors"), 
+                /*pass AuthorsPage list to child component*/
+                React.createElement(AuthorList, {authors: this.state.authors})
+            )
+        );
+    }
+});
+
+module.exports = AuthorsPage;
+
+},{"../../api/authorApi":198,"./authorList":203,"react":197}],205:[function(require,module,exports){
 "use strict";
 
 let React = require('react');
@@ -49218,16 +49287,13 @@ let Header = React.createClass({displayName: "Header",
         return (
             React.createElement("nav", {className: "navbar navbar-default"}, 
                 React.createElement("div", {className: "container-fluid"}, 
-                    React.createElement("a", {href: "/", className: "navbar-brand"}, 
+                    React.createElement(Link, {to: "app", className: "navbar-brand"}, 
                         React.createElement("img", {src: "images/pluralsight-logo.png"})
                     ), 
                     React.createElement("ul", {className: "nav navbar-nav"}, 
-                        React.createElement("li", null, React.createElement("a", {href: "/"}, "Home")), 
-                        React.createElement("li", null, React.createElement("a", {href: "/#authors"}, "Authors")), 
-                        React.createElement("li", null, React.createElement("a", {href: "#about"}, "About"))
-                        /*<li><Link to="app">Home</Link></li>*/
-                        /*<li><Link to="authors">Authors</Link></li>*/
-                        /*<li><Link to="about">About</Link></li>*/
+                        React.createElement("li", null, React.createElement(Link, {to: "app"}, "Home")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "authors"}, "Authors")), 
+                        React.createElement("li", null, React.createElement(Link, {to: "about"}, "About"))
                     )
                 )
             )
@@ -49236,10 +49302,11 @@ let Header = React.createClass({displayName: "Header",
 });
 
 module.exports = Header;
-},{"react":197,"react-router":28}],203:[function(require,module,exports){
+},{"react":197,"react-router":28}],206:[function(require,module,exports){
 "use strict";
 
 let React = require('react');
+let Link = require('react-router').Link;
 
 let Home = React.createClass({displayName: "Home",
     render: function () {
@@ -49248,54 +49315,45 @@ let Home = React.createClass({displayName: "Home",
                 React.createElement("h1", null, "Pluralsight Administration"), 
                 React.createElement("p", null, 
                     "React, Flux, and React Router combined with Browserify, Gulp, and Bootstrap for ultra responsive web app"
-                )
+                ), 
+                React.createElement(Link, {to: "about", className: "btn btn-success btn-lg"}, "Learn More")
             )
         );
     }
 });
 
 module.exports = Home;
-},{"react":197}],204:[function(require,module,exports){
+},{"react":197,"react-router":28}],207:[function(require,module,exports){
 "use strict";
 
 window.$ = window.jQuery = require('jquery');
 let React = require('react');
-let Home = require('./components/homePage');
-let About = require('./components/about/aboutPage');
-let Header = require('./components/common/header');
-let Authors = require('./components/authors/authorPage');
+let Router = require('react-router');
+let routes = require('./routes');
 
-
-let App = React.createClass({displayName: "App",
-    render: function () {
-        let Child;
-
-        switch (this.props.route) { // check hash
-            case 'about':
-                Child = About;
-                break;
-            case 'authors':
-                Child = Authors;
-                break;
-            default:
-                Child = Home;
-        }
-
-        return(
-            React.createElement("div", null, 
-                React.createElement(Header, null), 
-                React.createElement(Child, null)
-            )
-        );
-    }
+Router.run(routes, function (Handler) {
+   React.render( React.createElement(Handler, null), document.getElementById('app') );
 });
 
-function render() {
-    let route = window.location.hash.substr(1); // detect hash of URL
-    React.render(React.createElement(App, {route: route}), document.getElementById('app')); // path hash to app
-}
+},{"./routes":208,"jquery":2,"react":197,"react-router":28}],208:[function(require,module,exports){
+"use strict";
 
-window.addEventListener('hashchange', render);
-render();
+let React = require('react');
+let Router = require('react-router');
+let DefaultRoute = Router.DefaultRoute;
+let Route = Router.Route;
+let NotFoundRoute = Router.NotFoundRoute;
+let NotFoundPage = require('./components/404');
 
-},{"./components/about/aboutPage":200,"./components/authors/authorPage":201,"./components/common/header":202,"./components/homePage":203,"jquery":2,"react":197}]},{},[204]);
+let routes = (
+    React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
+        React.createElement(DefaultRoute, {handler: require('./components/homePage')}), 
+        React.createElement(Route, {name: "authors", handler: require('./components/authors/authorPage')}), 
+        React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
+        React.createElement(NotFoundRoute, {handler: NotFoundPage})
+    )
+);
+
+module.exports = routes;
+
+},{"./components/404":200,"./components/about/aboutPage":201,"./components/app":202,"./components/authors/authorPage":204,"./components/homePage":206,"react":197,"react-router":28}]},{},[207]);
