@@ -49140,25 +49140,24 @@ module.exports = NotFoundPage;
 
 },{"react":197,"react-router":28}],201:[function(require,module,exports){
 "use strict";
-
 var React = require('react');
 
 var About = React.createClass({displayName: "About",
-    // statics: {
-    //     willTransitionTo: function(transition, params, query, callback) {
-    //         if (!confirm('Are you sure you want to read a page that\'s this boring?')) {
-    //             transition.about();
-    //         } else {
-    //             callback();
-    //         }
-    //     },
-    //
-    //     willTransitionFrom: function(transition, component) {
-    //         if (!confirm('Are you sure you want to leave a page that\'s this exciting?')) {
-    //             transition.about();
-    //         }
-    //     }
-    // },
+    statics: {
+        willTransitionTo: function(transition, params, query, callback) {
+            if (!confirm('Are you sure you want to read a page that\'s this boring?')) {
+                transition.about();
+            } else {
+                callback();
+            }
+        },
+    
+        willTransitionFrom: function (transition, component) {
+            if (!confirm('Are you sure you want to leave a page that\'s this exciting?')) {
+                transition.about();
+            }
+        }
+    },
     render: function () {
         return (
             React.createElement("div", null, 
@@ -49184,14 +49183,13 @@ module.exports = About;
 },{"react":197}],202:[function(require,module,exports){
 "use strict";
 
-let React = require('react');
-let Header = require('./common/header');
-let RouteHandler = require('react-router').RouteHandler;
+var React = require('react');
+var Header = require('./common/header');
+var RouteHandler = require('react-router').RouteHandler;
 
-let App = React.createClass({displayName: "App",
+var App = React.createClass({displayName: "App",
     render: function () {
-
-        return(
+        return (
             React.createElement("div", null, 
                 React.createElement(Header, null), 
                 React.createElement(RouteHandler, null)
@@ -49327,30 +49325,34 @@ module.exports = Home;
 "use strict";
 
 window.$ = window.jQuery = require('jquery');
-let React = require('react');
-let Router = require('react-router');
-let routes = require('./routes');
+var React = require('react');
+var Router = require('react-router');
+var routes = require('./routes');
 
-Router.run(routes, function (Handler) {
+Router.run(routes, function (Handler) { // pass Router.HistoryLocation as second parameter to delete # from url
    React.render( React.createElement(Handler, null), document.getElementById('app') );
 });
 
 },{"./routes":208,"jquery":2,"react":197,"react-router":28}],208:[function(require,module,exports){
 "use strict";
 
-let React = require('react');
-let Router = require('react-router');
-let DefaultRoute = Router.DefaultRoute;
-let Route = Router.Route;
-let NotFoundRoute = Router.NotFoundRoute;
-let NotFoundPage = require('./components/404');
+var React = require('react');
+var Router = require('react-router');
+var DefaultRoute = Router.DefaultRoute;
+var Route = Router.Route;
+var NotFoundRoute = Router.NotFoundRoute;
+var NotFoundPage = require('./components/404');
+var Redirect = Router.Redirect;
 
-let routes = (
+var routes = (
     React.createElement(Route, {name: "app", path: "/", handler: require('./components/app')}, 
         React.createElement(DefaultRoute, {handler: require('./components/homePage')}), 
         React.createElement(Route, {name: "authors", handler: require('./components/authors/authorPage')}), 
         React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
-        React.createElement(NotFoundRoute, {handler: NotFoundPage})
+        React.createElement(NotFoundRoute, {handler: NotFoundPage}), 
+        React.createElement(Redirect, {from: "about-us", to: "about"}), 
+        React.createElement(Redirect, {from: "about/*", to: "about"}), 
+        React.createElement(Redirect, {from: "awthors", to: "authors"})
     )
 );
 

@@ -1,13 +1,12 @@
 "use strict";
 
-let React = require('react');
-let Header = require('./common/header');
-let RouteHandler = require('react-router').RouteHandler;
+var React = require('react');
+var Header = require('./common/header');
+var RouteHandler = require('react-router').RouteHandler;
 
-let App = React.createClass({
+var App = React.createClass({
     render: function () {
-
-        return(
+        return (
             <div>
                 <Header/>
                 <RouteHandler />
